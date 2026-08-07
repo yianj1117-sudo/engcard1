@@ -17,7 +17,7 @@
     <div class="orb orb-3"></div>
   </div>
 
-  <!-- 1. Landing Screen (首頁：展示 我的qrcode.png，點按進入遊戲) -->
+  <!-- 1. Landing Screen (首頁：展示專題資料夾下的 qrcode.png，點按進入遊戲) -->
   <div id="landingPage" class="landing-screen">
     <div class="landing-card">
       <div class="logo-area-center">
@@ -29,12 +29,12 @@
       <!-- QR Code Container (點按進入遊戲) -->
       <div class="qr-container" id="qrContainer" title="點按進入遊戲">
         <div class="qr-image-frame">
-          <img id="qrImage" src="我的qrcode.png" alt="我的 QR Code" onError="if(!this.dataset.triedFallback){this.dataset.triedFallback='1';this.src='qrcode.png';}">
+          <img id="qrImage" src="qrcode.png" alt="專題 QR Code">
           <div class="qr-overlay-hint">
             <span>👇 點按圖片進入遊戲</span>
           </div>
         </div>
-        <p class="qr-caption">掃描 QR Code 分享遊戲，或點按上方進入遊戲</p>
+        <p class="qr-caption">掃描專題 QR Code，或點按圖片進入遊戲</p>
       </div>
 
       <div class="landing-actions">
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <!-- 2. Main Game View (預設隱藏，點按首頁才進入) -->
+  <!-- 2. Main Game View (點按首頁才進入遊戲) -->
   <div id="gameContainer" class="container hidden">
     <!-- Header & Title -->
     <header class="game-header">
