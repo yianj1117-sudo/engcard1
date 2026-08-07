@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>英文單字配對挑戰 | Word & Image Match Master</title>
+  <title>英文單字配對王 | Word & Image Match Master</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,11 +17,42 @@
     <div class="orb orb-3"></div>
   </div>
 
-  <div class="container">
+  <!-- 1. Landing Screen (首頁：展示 我的qrcode.png，點按進入遊戲) -->
+  <div id="landingPage" class="landing-screen">
+    <div class="landing-card">
+      <div class="logo-area-center">
+        <span class="logo-icon-large">🔠</span>
+        <h1 class="landing-title">英文單字配對王 <span class="badge">Speed Match</span></h1>
+        <p class="landing-subtitle">點選英文單字與對應圖片完成配對！速度越快，分數越高！</p>
+      </div>
+
+      <!-- QR Code Container (點按進入遊戲) -->
+      <div class="qr-container" id="qrContainer" title="點按進入遊戲">
+        <div class="qr-image-frame">
+          <img id="qrImage" src="我的qrcode.png" alt="我的 QR Code" onError="if(!this.dataset.triedFallback){this.dataset.triedFallback='1';this.src='qrcode.png';}">
+          <div class="qr-overlay-hint">
+            <span>👇 點按圖片進入遊戲</span>
+          </div>
+        </div>
+        <p class="qr-caption">掃描 QR Code 分享遊戲，或點按上方進入遊戲</p>
+      </div>
+
+      <div class="landing-actions">
+        <button id="startGameBtn" class="btn btn-primary btn-large landing-start-btn">
+          🎮 點按進入遊戲 (Start Game)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Game View (預設隱藏，點按首頁才進入) -->
+  <div id="gameContainer" class="container hidden">
     <!-- Header & Title -->
     <header class="game-header">
       <div class="logo-area">
-        <span class="logo-icon">🔠</span>
+        <button id="homeBtn" class="icon-btn" title="返回首頁">
+          <span>🏠</span>
+        </button>
         <div>
           <h1 class="game-title">英文單字配對王 <span class="badge">Speed Match</span></h1>
           <p class="game-subtitle">點選英文單字與對應圖片完成配對！速度越快，分數越高！</p>
@@ -101,7 +132,7 @@
 
     <!-- Main Game Board Container -->
     <main class="game-board-container">
-      <!-- 1. Direct Matching View (Default: 4 Words + 4 Images) -->
+      <!-- 1. Direct Matching View (4 Words + 4 Images) -->
       <div class="matching-columns" id="directMatchView">
         <!-- English Words Column -->
         <div class="column-panel">
