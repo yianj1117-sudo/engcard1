@@ -152,7 +152,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 22px;
 }
 
 .logo-area-center {
@@ -266,6 +266,37 @@ body {
   padding: 16px 28px;
   font-size: 1.15rem;
   letter-spacing: 0.5px;
+}
+
+/* Landing Footer / Credit Badge */
+.landing-footer {
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.credit-badge {
+  font-family: var(--font-title);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(127, 0, 255, 0.35), rgba(0, 242, 254, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 24px;
+  border-radius: 30px;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.credit-badge:hover {
+  transform: translateY(-2px) scale(1.04);
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
 }
 
 /* Main Game Container */
