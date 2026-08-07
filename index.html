@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英文單字配對挑戰 | Word & Image Match Master</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;600;700;800&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header & Title -->
+    <header class="game-header">
+      <div class="logo-area">
+        <span class="logo-icon">🔠</span>
+        <div>
+          <h1 class="game-title">英文單字配對王 <span class="badge">Speed Match</span></h1>
+          <p class="game-subtitle">點選英文單字與對應圖片完成配對！速度越快，分數越高！</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button id="soundToggleBtn" class="icon-btn" title="切換音效">
+          <span id="soundIcon">🔊</span>
+        </button>
+        <button id="speechToggleBtn" class="icon-btn" title="切換發音">
+          <span id="speechIcon">🗣️</span>
+        </button>
+        <button id="restartBtnHeader" class="btn btn-primary">
+          <span class="btn-icon">🔄</span> 重玩 (Restart)
+        </button>
+      </div>
+    </header>
+
+    <!-- Score & Timer HUD -->
+    <div class="hud-panel">
+      <!-- Timer -->
+      <div class="hud-card timer-card">
+        <div class="hud-label"><span class="hud-icon">⏱️</span> 遊戲時間</div>
+        <div class="hud-value" id="timerDisplay">00:00.00</div>
+      </div>
+
+      <!-- Score -->
+      <div class="hud-card score-card">
+        <div class="hud-label"><span class="hud-icon">⭐</span> 當前得分</div>
+        <div class="hud-value" id="scoreDisplay">0</div>
+        <div class="speed-indicator" id="speedIndicator">連擊加成 1.0x</div>
+      </div>
+
+      <!-- Streak / Combo -->
+      <div class="hud-card combo-card">
+        <div class="hud-label"><span class="hud-icon">🔥</span> 連擊 Combo</div>
+        <div class="combo-badge-container">
+          <span class="combo-count" id="comboDisplay">0</span>
+          <span class="combo-text">連勝</span>
+        </div>
+      </div>
+
+      <!-- Best Record -->
+      <div class="hud-card record-card">
+        <div class="hud-label"><span class="hud-icon">🏆</span> 最高紀錄</div>
+        <div class="hud-value-small" id="bestScoreDisplay">0 分</div>
+        <div class="record-time" id="bestTimeDisplay">最快 00:00</div>
+      </div>
+    </div>
+
+    <!-- Mode Tabs & Category Selector -->
+    <div class="game-meta-bar">
+      <!-- Mode Tabs -->
+      <div class="mode-tabs">
+        <button id="modeDirectBtn" class="mode-tab active">🎯 雙欄連點配對</button>
+        <button id="modeFlipBtn" class="mode-tab">🎴 蓋牌記憶配對</button>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-label">配對進度 <span id="matchedCountText">0 / 4 組</span></div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+        </div>
+      </div>
+      
+      <div class="category-selector">
+        <label for="categorySelect">主題庫：</label>
+        <select id="categorySelect" class="styled-select">
+          <option value="all">🎲 綜合隨機 4 字</option>
+          <option value="animals">🦁 常用動物</option>
+          <option value="food">🍕 美味食物</option>
+          <option value="objects">🎸 生活用品 & 科技</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Main Game Board Container -->
+    <main class="game-board-container">
+      <!-- 1. Direct Matching View (Default: 4 Words + 4 Images) -->
+      <div class="matching-columns" id="directMatchView">
+        <!-- English Words Column -->
+        <div class="column-panel">
+          <h2 class="column-header"><span class="col-dot word-dot"></span> 英文單字 (Words)</h2>
+          <div class="cards-grid" id="wordsGrid">
+            <!-- Dynamic word cards injected here -->
+          </div>
+        </div>
+
+        <!-- Divider Line -->
+        <div class="matching-divider">
+          <div class="lightning-line"></div>
+          <div class="vs-badge">VS</div>
+        </div>
+
+        <!-- Pictures Column -->
+        <div class="column-panel">
+          <h2 class="column-header"><span class="col-dot image-dot"></span> 對應圖片 (Pictures)</h2>
+          <div class="cards-grid" id="imagesGrid">
+            <!-- Dynamic image cards injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Card Flip Memory View (Face Down Grid) -->
+      <div class="memory-grid hidden" id="memoryFlipView">
+        <!-- 8 memory flip cards injected dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Victory Modal -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="trophy-bounce">🏆</div>
+        <h2>恭喜通關！Match Master!</h2>
+        <p class="modal-subtitle">你成功完成了所有英文單字配對！</p>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-box">
+          <span class="result-label">最終得分</span>
+          <span class="result-value highlight" id="finalScoreText">0</span>
+        </div>
+        <div class="result-box">
+          <span class="result-label">通關時間</span>
+          <span class="result-value" id="finalTimeText">00:00.00</span>
+        </div>
+        <div class="result-box">
+          <span class="result-label">時效獎勵</span>
+          <span class="result-value" id="speedBonusText">+0</span>
+        </div>
+        <div class="result-box">
+          <span class="result-label">最高連爆</span>
+          <span class="result-value" id="maxComboText">0 Combo</span>
+        </div>
+      </div>
+
+      <div id="newRecordBanner" class="new-record-banner hidden">
+        🎉 刷新個人最高分紀錄！
+      </div>
+
+      <div class="modal-actions">
+        <button id="modalRestartBtn" class="btn btn-primary btn-large">
+          🔄 再玩一次 (Play Again)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
