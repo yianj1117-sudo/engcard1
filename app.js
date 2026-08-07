@@ -1,8 +1,7 @@
 /* ==========================================================================
    English Vocabulary Matching Game - Main Logic Script
-   Default Mode: Direct Matching (連點/點擊配對) with optional Memory Flip tab
-   Features: Real-time Stopwatch, Speed Bonus Math, Combo Streaks,
-             Web Audio Synthesizer, Web Speech API, Confetti Cannon, Replay
+   Features: Landing Page with QR Code Entry, Direct Match & Memory Flip Modes,
+             Stopwatch Timer, Speed Bonus Math, TTS Pronunciation, Confetti FX
    ========================================================================== */
 
 // --- Vocabulary Database ---
@@ -39,12 +38,13 @@ function createSvgDataUrl(emoji, word) {
 
 // --- Game State ---
 let gameState = {
-  mode: 'direct',        // 'direct' (Direct Match) or 'flip' (Memory Flip)
-  activeVocabulary: [], // 4 selected vocabulary items
+  screen: 'landing',     // 'landing' or 'game'
+  mode: 'direct',        // 'direct' or 'flip'
+  activeVocabulary: [], // 4 selected items
   
   // Direct Mode Selections
-  selectedWordCard: null,  // { id, cardElement, word }
-  selectedImageCard: null, // { id, cardElement, word }
+  selectedWordCard: null,
+  selectedImageCard: null,
   
   // Memory Flip Selections
   flippedCards: [],
@@ -66,6 +66,12 @@ let gameState = {
 };
 
 // --- DOM Elements ---
+const landingPage = document.getElementById('landingPage');
+const gameContainer = document.getElementById('gameContainer');
+const qrContainer = document.getElementById('qrContainer');
+const startGameBtn = document.getElementById('startGameBtn');
+const homeBtn = document.getElementById('homeBtn');
+
 const directMatchView = document.getElementById('directMatchView');
 const memoryFlipView = document.getElementById('memoryFlipView');
 const wordsGrid = document.getElementById('wordsGrid');
@@ -137,7 +143,7 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.08);
     } else if (type === 'match') {
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       notes.forEach((freq, idx) => {
         const o = ctx.createOscillator();
         const g = ctx.createGain();
@@ -259,6 +265,24 @@ function resetTimer() {
   timerDisplay.textContent = '00:00.00';
 }
 
+// --- Navigation & Page Transition ---
+function enterGameScreen() {
+  playSound('select');
+  gameState.screen = 'game';
+  landingPage.classList.add('hidden');
+  gameContainer.classList.remove('hidden');
+  initGame();
+}
+
+function showLandingPageScreen() {
+  playSound('select');
+  resetTimer();
+  gameState.screen = 'landing';
+  gameContainer.classList.add('hidden');
+  landingPage.classList.remove('hidden');
+  victoryModal.classList.remove('active');
+}
+
 // --- Game Initialization / Reset ---
 function initGame() {
   resetTimer();
@@ -283,7 +307,6 @@ function initGame() {
 
   updateBestRecordDisplay();
 
-  // Filter Pool based on Category
   const cat = categorySelect.value;
   let pool = VOCABULARY_DATABASE;
   if (cat !== 'all') {
@@ -291,7 +314,6 @@ function initGame() {
     if (pool.length < 4) pool = VOCABULARY_DATABASE;
   }
 
-  // Pick 4 unique items for current round
   gameState.activeVocabulary = shuffleArray(pool).slice(0, 4);
 
   if (gameState.mode === 'direct') {
@@ -306,7 +328,7 @@ function initGame() {
 }
 
 // ==========================================================================
-// MODE 1: DIRECT PAIR MATCHING (點擊/連點配對)
+// MODE 1: DIRECT PAIR MATCHING
 // ==========================================================================
 function renderDirectMatchBoard(vocabulary) {
   wordsGrid.innerHTML = '';
@@ -405,7 +427,6 @@ function checkDirectMatchAttempt() {
   gameState.lastActionTime = now;
 
   if (wordObj.id === imageObj.id) {
-    // MATCH SUCCESS!
     playSound('match');
     speakWord(wordObj.word);
 
@@ -444,7 +465,6 @@ function checkDirectMatchAttempt() {
       handleVictory();
     }
   } else {
-    // MISMATCH
     playSound('wrong');
 
     gameState.combo = 0;
@@ -470,7 +490,7 @@ function checkDirectMatchAttempt() {
 }
 
 // ==========================================================================
-// MODE 2: CARD FLIP MEMORY GAME (蓋牌記憶配對)
+// MODE 2: CARD FLIP MEMORY GAME
 // ==========================================================================
 function renderMemoryFlipBoard(vocabulary) {
   memoryGrid.innerHTML = '';
@@ -722,6 +742,11 @@ function triggerConfetti() {
   requestAnimationFrame(render);
 }
 
+// --- Landing Page Click Listeners ---
+qrContainer.addEventListener('click', enterGameScreen);
+startGameBtn.addEventListener('click', enterGameScreen);
+homeBtn.addEventListener('click', showLandingPageScreen);
+
 // --- Mode Switching Listeners ---
 modeDirectBtn.addEventListener('click', () => {
   if (gameState.mode === 'direct') return;
@@ -770,7 +795,7 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-// Initialize on Load
+// Initialize Landing Page on Load
 document.addEventListener('DOMContentLoaded', () => {
-  initGame();
+  updateBestRecordDisplay();
 });
